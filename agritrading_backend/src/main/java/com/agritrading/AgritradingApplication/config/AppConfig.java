@@ -34,6 +34,7 @@ public class AppConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("login", "register")
                         .permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
