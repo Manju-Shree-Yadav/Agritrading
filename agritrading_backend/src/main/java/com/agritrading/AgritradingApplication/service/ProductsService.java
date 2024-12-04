@@ -29,7 +29,7 @@ public class ProductsService {
             return productOptional.get();
         } else {
             // Handle the case where the product is not found
-            throw new Exception("Product not found with id: " + id);
+            throw new Exception("Product not foundww with id: " + id);
         }
     }
 
