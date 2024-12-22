@@ -2,6 +2,8 @@ package com.agritrading.AgritradingApplication.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 
 public class Farmers{
@@ -85,4 +87,15 @@ public class Farmers{
 
     private String farmType;
     private String certification;
+
+    public List<Products> getProductsList() {
+        return productsList;
+    }
+
+    public void setProductsList(List<Products> productsList) {
+        this.productsList = productsList;
+    }
+
+    @OneToMany(mappedBy = "farmer" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    private List<Products> productsList;
 }

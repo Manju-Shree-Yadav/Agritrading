@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
-    @Query("select o from Orders  o where o.customer_Id=:customerid ")
+    @Query("select o from Orders  o where o.customer.customerId=:customerid ")
     public List<Orders> findByCustomerId(@Param("customerid") Integer customer_id);
+
+    @Query("select o from Orders o join o.product p where p.farmer.farmerId=:farmer_id ")
+    List<Orders> getOrdersByFarmerId(int farmer_id);
 }

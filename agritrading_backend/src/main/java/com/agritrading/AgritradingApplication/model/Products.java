@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.context.annotation.Primary;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Products {
@@ -21,24 +22,24 @@ public class Products {
     private int prod_Price;
     private Date listing_Date;
 
-    public int getProd_id() {
-        return prod_id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farmerId")
+    private Farmers farmer;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    private List<Orders> ordersList;
+
+    public List<Orders> getOrdersList() {
+        return ordersList;
     }
 
-    @Override
-    public String toString() {
-        return "Products{" +
-                "prod_id=" + prod_id +
-                ", prod_Name='" + prod_Name + '\'' +
-                ", prod_Description='" + prod_Description + '\'' +
-                ", category='" + category + '\'' +
-                ", prod_Img='" + prod_Img + '\'' +
-                ", prod_Stock=" + prod_Stock +
-                ", prod_Quantity=" + prod_Quantity +
-                ", prod_Price=" + prod_Price +
-                ", listing_Date=" + listing_Date +
-                ", farmer_id=" + farmer_id +
-                '}';
+    public void setOrdersList(List<Orders> ordersList) {
+        this.ordersList = ordersList;
+    }
+
+    public int getProd_id() {
+        return prod_id;
     }
 
     public void setProd_id(int prod_id) {
@@ -105,20 +106,34 @@ public class Products {
         return listing_Date;
     }
 
+    @Override
+    public String toString() {
+        return "Products{" +
+                "prod_id=" + prod_id +
+                ", prod_Name='" + prod_Name + '\'' +
+                ", prod_Description='" + prod_Description + '\'' +
+                ", category='" + category + '\'' +
+                ", prod_Img='" + prod_Img + '\'' +
+                ", prod_Stock=" + prod_Stock +
+                ", prod_Quantity=" + prod_Quantity +
+                ", prod_Price=" + prod_Price +
+                ", listing_Date=" + listing_Date +
+                ", farmer=" + farmer +
+                '}';
+    }
+
     public void setListing_Date(Date listing_Date) {
         this.listing_Date = listing_Date;
     }
 
-    public int getFarmer_id() {
-        return farmer_id;
+    public Farmers getFarmer() {
+        return farmer;
     }
 
-    public void setFarmer_id(int farmer_id) {
-        this.farmer_id = farmer_id;
+    public void setFarmer(Farmers farmer) {
+        this.farmer = farmer;
     }
 
-    @Column
-    private int farmer_id;
 
 
 

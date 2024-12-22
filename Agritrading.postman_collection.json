@@ -1,0 +1,618 @@
+{
+	"info": {
+		"_postman_id": "d4298e59-4e48-4b09-811a-885a28456724",
+		"name": "Agritrading",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33335494"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Farmer",
+					"item": [
+						{
+							"name": "getproductbyId",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authtoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5454/farmers/product?id=4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"farmers",
+										"product"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addProduct",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authtoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"prod_Name\": \"Apple\",\n  \"prod_Description\": \"High-quality organic Apple\",\n  \"category\": \"Fruit\",\n  \"prod_Img\": \"Apple.jpg\",\n  \"prod_Stock\": 85,\n  \"prod_Quantity\": 85,\n  \"prod_Price\": 200,\n  \"listing_Date\": \"2024-12-03\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5454/farmers/product",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"farmers",
+										"product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllProducts",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authtoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5454/farmers/product/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"farmers",
+										"product",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getbyCategory",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authtoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5454/farmers/product/by-category?category=grain",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"farmers",
+										"product",
+										"by-category"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "grain"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "API that are permitted to farmer user .",
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{authtoken}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"description": "Remaining :\n\nSee all product for customer"
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Customers",
+					"item": [
+						{
+							"name": "addOrders",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"productId\": 1,\n  \"quantity\": 5\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5454/customers/orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"customers",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getallorders",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5454/customers/orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"customers",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getordersbyId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5454/customers/orders/by-id?id=7",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"customers",
+										"orders",
+										"by-id"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "7"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteOrder",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{authtoken}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Farmer",
+					"item": [
+						{
+							"name": "GetAllOrdersofFarmersProducts",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authtoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5454/farmers/orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5454",
+									"path": [
+										"farmers",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "AddPayments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authtoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 1000,\n    \"paymentType\": \"Credit Card\",\n    \"paymentStatus\": \"Completed\",\n    \"orderId\" : 9\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5454/customers/payments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5454",
+							"path": [
+								"customers",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPaymentById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authtoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5454/customers/payments/get-byId?id=22",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5454",
+							"path": [
+								"customers",
+								"payments",
+								"get-byId"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "22"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePaymentById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authtoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5454/customers/payments?id=21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5454",
+							"path": [
+								"customers",
+								"payments"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "21"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdatePayment",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserRegisteration",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"mainfarmer\",\n  \"password\": \"m@123\",\n  \"role\": \"FARMER\",\n  \"name\": \"MainFarmer\",\n  \"address\": \"123 Main St\",\n  \"contactInfo\": \"0987654321\",\n  \"preferredPaymentMethod\": \"Credit Card\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5454/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5454",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Extract and save Bearer token\", function () {",
+							"    try {",
+							"        // Get the raw response text",
+							"        const response = pm.response.text();",
+							"",
+							"        if (response) {",
+							"            // Save the token as an environment variable",
+							"            pm.environment.set(\"authtoken\", response.trim());",
+							"            console.log(\"Token saved to environment variable:\", response.trim());",
+							"        } else {",
+							"            throw new Error(\"Token not found in response\");",
+							"        }",
+							"    } catch (error) {",
+							"        // Log errors and fail the test",
+							"        console.error(\"Error extracting token:\", error.message);",
+							"        pm.test(\"Failed to extract token\", function () {",
+							"            pm.expect.fail(\"Unable to extract token: \" + error.message);",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"maincustomer\",\n  \"password\": \"m@123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5454/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5454",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "home page",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXNudWZhcm1lciIsImlhdCI6MTczMzA3NzY3NiwiZXhwIjoxNzMzMTY0MDc2fQ.evpd0vUV4Q7BYoYf2Q0t7XshdC6lOgdro23F2atsQuM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5454/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5454",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

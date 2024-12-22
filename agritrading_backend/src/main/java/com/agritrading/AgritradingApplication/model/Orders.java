@@ -1,9 +1,6 @@
 package com.agritrading.AgritradingApplication.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -14,28 +11,59 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int order_Id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customers customer;
+
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prod_id")
+    private Products product;
+
+
+    private int quantity;
+    private int total_Price;
+    @CreationTimestamp
+    private Date order_date;
+    private String order_status;
+
+
+
     public int getOrder_Id() {
         return order_Id;
+    }
+
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "order_Id=" + order_Id +
+                ", product=" + product +
+                ", quantity=" + quantity +
+                ", total_Price=" + total_Price +
+                ", order_date=" + order_date +
+                ", order_status='" + order_status + '\'' +
+                '}';
     }
 
     public void setOrder_Id(int order_Id) {
         this.order_Id = order_Id;
     }
 
-    public int getCustomer_Id() {
-        return customer_Id;
+    public Customers getCustomer() {
+        return customer;
     }
 
-    public void setCustomer_Id(int customer_Id) {
-        this.customer_Id = customer_Id;
+    public void setCustomer(Customers customer) {
+        this.customer = customer;
     }
 
-    public int getProduct_Id() {
-        return product_Id;
+    public Products getProduct() {
+        return product;
     }
 
-    public void setProduct_Id(int product_Id) {
-        this.product_Id = product_Id;
+    public void setProduct(Products product) {
+        this.product = product;
     }
 
     public int getQuantity() {
@@ -70,13 +98,6 @@ public class Orders {
         this.order_status = order_status;
     }
 
-    private int customer_Id;
-    private int product_Id;
-    private int quantity;
-    private int total_Price;
-    @CreationTimestamp
-    private Date order_date;
-    private String order_status;
 
 
 
