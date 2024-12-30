@@ -1,8 +1,10 @@
 package com.agritrading.AgritradingApplication.service;
 
 
+import com.agritrading.AgritradingApplication.dto.AddDeliveryRequestDTO;
 import com.agritrading.AgritradingApplication.model.Delivery;
 import com.agritrading.AgritradingApplication.repo.DeliveryRepository;
+import com.agritrading.AgritradingApplication.repo.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,17 @@ import java.util.List;
 @Service
 public class DeliveryService {
     @Autowired
+    private OrdersRepository ordersRepository;
+    @Autowired
     private DeliveryRepository deliveryRepository;
-    public Delivery addDelivery(Delivery delivery) {
-        return deliveryRepository.save(delivery);
+    public Delivery addDelivery(AddDeliveryRequestDTO delivery) {
+
+        Delivery delivery1 = new Delivery();
+        delivery1.setDeliveryAddress(delivery.getDeliveryAddress());
+        delivery1.setEstimatedArrivalTime(delivery.getEstimatedArrivalTime());
+        delivery1.setTrackingNumber(delivery.getTrackingNumber());
+        delivery1.setOrder(ordersRepository.findById(delivery.getOrderId()).get());
+        return deliveryRepository.save(delivery1);
     }
 
     public Delivery getDelivery(int id) {

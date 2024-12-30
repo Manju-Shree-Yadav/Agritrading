@@ -32,7 +32,7 @@ public class AppConfig {
 
                 .csrf(customizer-> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("login", "register")
+                        .requestMatchers("login", "register", "/images/**")
                         .permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated())

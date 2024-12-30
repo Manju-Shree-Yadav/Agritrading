@@ -31,4 +31,7 @@ public class Response {
 
     private PaymentDTO payment;
     private List<PaymentDTO> paymentList;
+
+    private DeliveryDTO delivery;
+    private List<DeliveryDTO> deliveryList;
 }

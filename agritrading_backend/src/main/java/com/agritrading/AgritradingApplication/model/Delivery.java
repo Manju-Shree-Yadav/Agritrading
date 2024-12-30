@@ -10,7 +10,7 @@ import java.util.Date;
 public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int  id;
+    private int  delivery_id;
     @OneToOne
     @JoinColumn(name = "order_id")
     private Orders order;
@@ -21,7 +21,7 @@ public class Delivery {
     @Override
     public String toString() {
         return "Delivery{" +
-                "id=" + id +
+                "id=" + delivery_id +
                 ", order=" + order +
                 ", trackingNumber=" + trackingNumber +
                 ", estimatedArrivalTime=" + estimatedArrivalTime +
@@ -30,11 +30,11 @@ public class Delivery {
     }
 
     public int getId() {
-        return id;
+        return delivery_id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.delivery_id = id;
     }
 
     public Orders getOrder() {
