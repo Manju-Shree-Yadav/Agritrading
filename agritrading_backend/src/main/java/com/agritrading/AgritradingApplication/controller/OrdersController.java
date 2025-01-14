@@ -209,13 +209,13 @@ public class OrdersController {
     @DeleteMapping("/orders")
     public void deleteOrder(@RequestParam("id")int orderId, Authentication authentication) throws Exception {
         Integer farmerId = farmerId(authentication);
-//        Integer customerId = customerId(authentication);
+        Integer customerId = customerId(authentication);
 
-//        if(customerId != null) {
-//            if(ordersRepository.findById(orderId).isPresent()) {
-//                if(ordersRepository.findById(orderId).get().getCustomer().getCustomerId()==customerId) { ordersRepository.deleteById(orderId); }
-//            }
-//        }
+        if(customerId != null) {
+            if(ordersRepository.findById(orderId).isPresent()) {
+                if(ordersRepository.findById(orderId).get().getCustomer().getCustomerId()==customerId) { ordersRepository.deleteById(orderId); }
+            }
+        }
 
         if(farmerId != null) {
             if(ordersRepository.findById(orderId).isPresent()) {
