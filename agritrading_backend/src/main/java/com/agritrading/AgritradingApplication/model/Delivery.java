@@ -2,6 +2,8 @@ package com.agritrading.AgritradingApplication.model;
 
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.query.Order;
 
 import java.util.Date;
@@ -13,10 +15,28 @@ public class Delivery {
     private int  delivery_id;
     @OneToOne
     @JoinColumn(name = "order_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Orders order;
     private int trackingNumber;
     private Date estimatedArrivalTime;
     private String deliveryAddress;
+    private String deliveryStatus;
+
+    public int getDelivery_id() {
+        return delivery_id;
+    }
+
+    public void setDelivery_id(int delivery_id) {
+        this.delivery_id = delivery_id;
+    }
+
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
 
     @Override
     public String toString() {
@@ -68,8 +88,6 @@ public class Delivery {
     public void setDeliveryAddress(String deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
     }
-
-
 
 
 }
