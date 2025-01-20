@@ -63,6 +63,18 @@ public class DeliveryController{
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @GetMapping("/delivery-byorderid")
+    public ResponseEntity<Response> getDeliveryByOrderId(@RequestParam("id")Optional<Integer> id) {
+        Response response = Response.builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Delivery Fetched")
+                .delivery(MapDeliveryDTO.map(deliveryService.getDeliveryByOrderId(id.get())))
+                .build();
+
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
 
 
 

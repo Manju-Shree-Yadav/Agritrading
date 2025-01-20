@@ -15,6 +15,7 @@ public class MapDeliveryDTO {
                 .trackingNumber(delivery.getTrackingNumber())
                 .order(MapOrderDTO.map(delivery.getOrder()))
                 .estimatedArrivalTime(delivery.getEstimatedArrivalTime())
+                .deliveryStatus(delivery.getDeliveryStatus())
                 .build();
     }
 

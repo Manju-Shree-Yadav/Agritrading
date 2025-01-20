@@ -19,7 +19,7 @@ public class UserController {
     @Autowired
     private UserRepo userRepo;
 
-    @GetMapping("/register")
+    @PostMapping("/register")
     public  Users register(@RequestBody RegisterRequest user) {
         return userService.register(user);
     }
