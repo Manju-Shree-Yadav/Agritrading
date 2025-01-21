@@ -75,7 +75,7 @@ const Insight = () => {
   return (
    
     <Container maxWidth="md">
-      <Title variant="h4">Insight</Title>
+      <Title variant="h4">Exploratory Data Analysis (EDA)</Title>
 
       <UploadButton variant="contained" component="label">
         Add Dataset
@@ -121,9 +121,30 @@ const Insight = () => {
         <Typography variant="h5" gutterBottom>
           Report
         </Typography>
-        <DummyGraph />
-        <DummyGraph />
-        <DummyGraph />
+        <h6>1.Correlation between Numeric Attributes</h6>
+        <img
+          src="/1.png"
+          alt="Graph 1"
+          style={{ width: "100%", height: "100%", borderRadius: "8px", margin: "10px 0" }}
+        />
+        <h6>2.Analyzing Target Variable</h6>
+        <img
+          src="/2.png"
+          alt="Graph 2"
+          style={{ width: "100%", height: "100%", borderRadius: "8px", margin: "10px 0" }}
+        />
+        <h6>3.Data Distribution</h6>
+        <img
+          src="/3.png"
+          alt="Graph 3"
+          style={{ width: "100%", height: "100%", borderRadius: "8px", margin: "10px 0" }}
+        />
+        <h6>4.Checking for Outliers</h6>
+        <img
+          src="/4.png"
+          alt="Graph 4"
+          style={{ width: "100%", height: "100%", borderRadius: "8px", margin: "10px 0" }}
+        />
       </Box>
     </Container>
   );
