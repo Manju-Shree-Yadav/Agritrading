@@ -23,6 +23,7 @@ public class DeliveryService {
         delivery1.setEstimatedArrivalTime(delivery.getEstimatedArrivalTime());
         delivery1.setTrackingNumber(delivery.getTrackingNumber());
         delivery1.setOrder(ordersRepository.findById(delivery.getOrderId()).get());
+        delivery1.setDeliveryStatus(delivery.getDeliveryStatus());
         return deliveryRepository.save(delivery1);
     }
 
@@ -40,5 +41,9 @@ public class DeliveryService {
             }
         }
         return null;
+    }
+
+    public Delivery getDeliveryByOrderId(Integer orderId) {
+        return deliveryRepository.findByOrderId(orderId);
     }
 }

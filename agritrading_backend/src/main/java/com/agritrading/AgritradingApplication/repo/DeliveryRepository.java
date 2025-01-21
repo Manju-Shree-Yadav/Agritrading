@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
 
 @Repository
@@ -17,5 +18,6 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
     @Query("SELECT d FROM Delivery d JOIN d.order o WHERE o.customer.customerId =:customerId")
     List<Delivery> findForCustomer(@Param("customerId") int customerId);
 
-
+    @Query("SELECT d FROM Delivery d WHERE d.order=:orderId")
+    Delivery findByOrderId(@Param("orderId")  int orderId);
 }

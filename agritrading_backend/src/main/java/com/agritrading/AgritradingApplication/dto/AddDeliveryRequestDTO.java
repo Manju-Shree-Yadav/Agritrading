@@ -14,4 +14,5 @@ public class AddDeliveryRequestDTO {
     private int trackingNumber;
     private Date estimatedArrivalTime;
     private String deliveryAddress;
+    private String deliveryStatus;
 }

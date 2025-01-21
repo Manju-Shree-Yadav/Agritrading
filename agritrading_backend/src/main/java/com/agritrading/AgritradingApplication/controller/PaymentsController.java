@@ -40,9 +40,13 @@ public class PaymentsController {
     @PostMapping("/payments")
     public ResponseEntity<Response> createPayment(@RequestBody AddPaymentDTO payments) throws Exception {
         Integer orderId = payments.getOrderId();
+
         Orders order = ordersService.getOrder(orderId);
 //        System.out.println(orderId);
 //        System.out.println(order);
+        if(payments.getPaymentStatus().equals("COMPLETED")){
+            order.setOrder_status("COMPLETED");
+        }
         PaymentDTO paymentDTO =  paymentService.createPayments(payments , order);
 
         Response response = Response.builder()
@@ -57,6 +61,8 @@ public class PaymentsController {
     @GetMapping("/payments/get-byId")
     public ResponseEntity<Response> getPaymentsbyId(@RequestParam("id") Optional<Integer> id, Authentication authentication) {
         Payments payment =  paymentService.getPaymentById(id);
+
+
 
         Response response = Response.builder()
                 .status(HttpStatus.CREATED.value())
