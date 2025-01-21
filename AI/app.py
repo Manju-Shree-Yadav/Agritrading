@@ -8,7 +8,10 @@ import matplotlib.pyplot as plt
 import io
 from datetime import datetime
 from flask import send_file
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 # Load the trained model
 model_path = "price_recommendation_model.keras"
@@ -140,11 +143,18 @@ def generate_graph():
     """
     try:
         # Get query parameters
-        commodity = request.args.get("commodity")
+        commoditystring = request.args.get("commodity")
         month = request.args.get("month")
+        commodity_doc = db.commodity.find_one({"commodity": commoditystring})
          
-        print("commodity:", commodity)
-        print("month:", month)
+      
+        
+        if not commodity_doc:
+            return jsonify({"error": f"Commodity '{commoditystring}' not found in the database."}), 404
+
+        # Extract encoded values
+        
+        commodity = commodity_doc.get("commodity_encoded")
 
         if not commodity or not month:
             return jsonify({"error": "Missing required query parameters: 'commodity' and 'month'"}), 400
@@ -204,7 +214,30 @@ def generate_graph():
         # Handle errors
         return jsonify({"error": str(e)}), 500
 
+@app.route("/fetch_data", methods=["GET"])
+def fetch_data():
+    try:
+        # Fetch all documents from the collections
+        states = db.state.find({}, {"_id": 0, "state": 1})  # Retrieve state names
+        districts = db.district.find({}, {"_id": 0, "district": 1})  # Retrieve district names
+        markets = db.market.find({}, {"_id": 0, "market": 1})  # Retrieve market names
+        commodities = db.commodity.find({}, {"_id": 0, "commodity": 1})  # Retrieve commodity names
 
+        # Convert cursor objects to lists
+        states_list = [doc["state"] for doc in states]
+        districts_list = [doc["district"] for doc in districts]
+        markets_list = [doc["market"] for doc in markets]
+        commodities_list = [doc["commodity"] for doc in commodities]
+
+        # Return the results as a JSON response
+        return jsonify({
+            "states": states_list,
+            "districts": districts_list,
+            "markets": markets_list,
+            "commodities": commodities_list
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/favicon.ico")
 def favicon():
