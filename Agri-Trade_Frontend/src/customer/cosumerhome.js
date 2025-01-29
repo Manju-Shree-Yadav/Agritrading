@@ -4,17 +4,27 @@ import NavBar from '../components/compo/nav';
 import '../styles/global.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { Spinner, Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap'; // Import Bootstrap components
+import { Divider, Stack, Typography, TextField, MenuItem, Select, InputLabel, FormControl, Chip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const ConsumerHome = () => {
     const [token, setToken] = useState(null);
     const [allProducts, setAllProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [userName, setUserName] = useState('');
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [category, setCategory] = useState('');
     const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
-
+    const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+      const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+        setOpen(true);
+      };
     useEffect(() => {
         const savedAuth = JSON.parse(localStorage.getItem('authData'));
         const savedToken = localStorage.getItem('authToken');
@@ -28,6 +38,24 @@ const ConsumerHome = () => {
         }
     }, [navigate]);
 
+
+    useEffect(() => {
+        let filtered = allProducts;
+        
+        if (searchQuery) {
+          filtered = filtered.filter(product => 
+            product.prod_Name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
+    
+        if (category) {
+          filtered = filtered.filter(product => product.category === category);
+        }
+    
+        setFilteredProducts(filtered);
+      }, [searchQuery, category, allProducts]);
+    
+
     const fetchAllProducts = async (token) => {
         try {
             const response = await fetch('http://localhost:5456/customer/products', {
@@ -38,6 +66,7 @@ const ConsumerHome = () => {
             const data = await response.json();
             if (response.ok) {
                 setAllProducts(data.productList || []);
+                setFilteredProducts(data.productList || []);
             } else {
                 throw new Error(data.message || 'Failed to fetch products');
             }
@@ -95,6 +124,68 @@ const ConsumerHome = () => {
             <Container className="mt-4">
                 <h2 className='text-center'>Hey {userName}! Welcome</h2>
                 <h5 className='text-center mb-4'>Please make yourself comfortable in finding our esteemed products</h5>
+                
+                {/* Changes Made */}
+                <Stack direction="row" gap='20px' justifyContent='space-between' marginBottom='30px'>
+          <Stack direction='row' marginLeft='60px' alignItems='end' gap='10px'>
+            <SearchIcon></SearchIcon>
+          <TextField
+          label="Search by Product"
+          size="small"
+          variant="standard"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+          </Stack>
+
+          <Stack direction="row" marginRight="60px" alignItems="end" gap="10px">
+      <Chip
+        label={`FILTER: ${category || 'ALL'}`}
+        style={{ backgroundColor: 'lightgrey', cursor: 'pointer' }}
+        onClick={handleClick}
+      />
+      <Select
+        value={category}
+        onChange={(e) => {
+          setCategory(e.target.value);
+          setOpen(false);
+        }}
+        open={open}
+        onClose={() => setOpen(false)}
+        MenuProps={{
+          anchorEl: anchorEl,
+          open: open,
+          onClose: () => setOpen(false),
+          PaperProps: {
+            style: {
+              marginTop: 8, // Adjusts spacing between chip and dropdown
+            },
+          },
+        }}
+        sx={{ display: 'none' }} // Hide default select UI
+      >
+        <MenuItem value="">ALL</MenuItem>
+        <MenuItem value="FRESH">FRESH</MenuItem>
+        <MenuItem value="ORGANIC">ORGANIC</MenuItem>
+      </Select>
+    </Stack>
+       
+        {/* Category Filter */}
+        {/* <FormControl sx={{width: '200px' , marginRight: '60px'}} >
+          <InputLabel>Filter by Category</InputLabel>
+          <Select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="FRESH">FRESH</MenuItem>
+            <MenuItem value="ORGANIC">ORGANIC</MenuItem>
+          </Select>
+        </FormControl> */}
+        </Stack>
+                
                 {loading ? (
                     <div className="d-flex justify-content-center">
                         <Spinner animation="border" role="status">
@@ -103,8 +194,8 @@ const ConsumerHome = () => {
                     </div>
                 ) : (
                     <Row>
-                        {allProducts.length > 0 ? (
-                            allProducts.map((product, index) => (
+                        {filteredProducts.length > 0 ? (
+                            filteredProducts.map((product, index) => (
                                 <Col key={product.prod_id || index} md={4} className="mb-4">
                                     <Card style={{ height: "700px", overflow: "hidden" }}>
     <Card.Img 
@@ -117,7 +208,7 @@ const ConsumerHome = () => {
         <Card.Text>{product.prod_Description}</Card.Text>
         <Card.Text>Price: ₹{product.prod_Price}</Card.Text>
         <Card.Text>Stock: {product.prod_Stock}</Card.Text>
-        <Button variant="primary" onClick={() => handleBuyClick(product)}>Buy</Button>
+        {product.prod_Stock> 0 ?  (<Button variant="primary" onClick={() => handleBuyClick(product)}>Buy</Button>):(<Button variant="primary" disabled onClick={() => handleBuyClick(product)}>Buy</Button>)}
     </Card.Body>
 </Card>
 
@@ -129,6 +220,8 @@ const ConsumerHome = () => {
                     </Row>
                 )}
             </Container>
+
+            
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>

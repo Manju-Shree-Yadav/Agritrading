@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import { Modal, Box, Typography, TextField, Button, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Stack } from 'react-bootstrap';
+import Autocomplete from "@mui/material/Autocomplete";
+import axios from "axios";
 const ProductModal = ({ open, onClose, productData }) => {
   console.log(productData);
   const [productName, setProductName] = useState('');
@@ -16,7 +18,7 @@ const ProductModal = ({ open, onClose, productData }) => {
   const [prodId , setProdId] = useState('');
    const [token, setToken] = useState(null);
    const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const getImageUrl = (imageName) => {
     // console.log(imageName);
     const image = `http://localhost:5456${imageName}`;
@@ -97,9 +99,53 @@ const ProductModal = ({ open, onClose, productData }) => {
     
   };
 
+ const [dropdownOptions, setDropdownOptions] = useState({
+     states: [],
+     districts: [],
+     markets: [],
+     commodities: [],
+   });
  
+   const options = [
+     'FRESH',
+     'ORGANIC',
+   ];
+ 
+   const renderDropdown = (label, key, options) => (
+       <Box mb={2} width="100%">
+         <Autocomplete
+           options={options}
+           getOptionLabel={(option) => option}
+           renderInput={(params) => <TextField {...params} label="Product Name" variant="outlined" />}
+           onChange={(event, newValue) =>
+             setProductName(newValue)
+           }
+           value={productName || ""}
+           loading={loading}
+           loadingText="Loading options..."
+           ListboxProps={{ style: { maxHeight: 200, overflow: "auto" } }} // Makes it scrollable
+         />
+       </Box>
+     );
+
+     useEffect(() => {
+      const fetchDropdownData = async () => {
+        setLoading(true);
+        try {
+          const response = await axios.get("http://127.0.0.1:5000/fetch_data");
+          setDropdownOptions(response.data);
+        } catch (error) {
+          console.error("Error fetching dropdown data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchDropdownData();
+    }, []);
+  
 
   return (
+    
     <Modal open={open} onClose={onClose}>
       <Box
   sx={{
@@ -115,24 +161,17 @@ const ProductModal = ({ open, onClose, productData }) => {
   }}
 >
   {/* Stack for Header */}
-  <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+  <Stack direction='row'>
     <Typography variant="h6">
-      {productData ? 'Edit Product' : 'Add New Product'}
+      Edit Product
     </Typography>
     <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'gray' }} />
   </Stack>
 
   {/* Form */}
   <form onSubmit={handleFormSubmit}>
-    <TextField
-      fullWidth
-      label="Product Name"
-      variant="outlined"
-      value={productName}
-      onChange={(e) => setProductName(e.target.value)}
-      sx={{ mb: 2 }}
-      required
-    />
+  {renderDropdown("Commodity", "commodity", dropdownOptions.commodities)}
+    
     <TextField
       fullWidth
       label="Product Description"
@@ -142,15 +181,23 @@ const ProductModal = ({ open, onClose, productData }) => {
       sx={{ mb: 2 }}
       required
     />
-    <TextField
-      fullWidth
-      label="Category"
-      variant="outlined"
-      value={category}
-      onChange={(e) => setCategory(e.target.value)}
-      sx={{ mb: 2 }}
-      required
-    />
+   
+   <TextField
+              fullWidth
+              label="Category"
+              variant="outlined"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              sx={{ mb: 2 }}
+              required
+              select
+            >
+            {options.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+        </TextField>
     <TextField
       fullWidth
       type="number"

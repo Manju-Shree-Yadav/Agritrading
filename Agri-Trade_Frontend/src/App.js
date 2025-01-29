@@ -10,7 +10,6 @@ import FarmerProfilePage from './farmer/FarmerProfilePage';
 import ConsumerHome from './customer/cosumerhome';
 import ConsumerOrder from './customer/cosumerorder';
 import Payment from './customer/payment';
-import Predict from './AI/predict';
 import Insight from './farmer/InsightPage';
 import InsightPage from './farmer/InsightProductPage';
 import Register from './components/register';
@@ -30,7 +29,6 @@ const App = () => {
         <Route path="/consumer/home" element={<ConsumerHome/>} />
         <Route path="/consumer/order" element={<ConsumerOrder/>} />
         <Route path="/consumer/payment" element={<Payment/>} />
-        <Route path="/predict" element={<Predict/>} />
         <Route path="/insight" element={<Insight/>}/>
         <Route path="/insightproduct" element={<InsightPage/>}/>
         <Route path="/register" element={<Register/>}/>

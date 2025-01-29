@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/compo/nav';
-import ProductCard from './ProductCard';
-import { Divider, Stack, Typography } from '@mui/material';
 import ProductGrid from './ProductGrid';
-import { red } from '@mui/material/colors';
-
-
+import { Divider, Stack, Typography, TextField, MenuItem, Select, InputLabel, FormControl, Chip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 const Product = () => {
   const [productId, setProductId] = useState('');
   const [product, setProduct] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [token, setToken] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [category, setCategory] = useState('');
   const navigate = useNavigate();
-
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   useEffect(() => {
     const savedToken = localStorage.getItem('authToken');
     if (savedToken) {
@@ -25,25 +26,6 @@ const Product = () => {
     }
   }, [navigate]);
 
-  const fetchProductById = async (id, token) => {
-    try {
-      const response = await fetch(`http://localhost:5456/farmers/product?id=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok && data.status === 201) {
-        setProduct(data.product);
-      } else {
-        throw new Error(data.message || 'Failed to fetch product');
-      }
-    } catch (error) {
-      console.error('Error fetching product by ID:', error);
-      alert('Failed to fetch product. Please try again.');
-    }
-  };
-
   const fetchAllProducts = async (token) => {
     try {
       const response = await fetch('http://localhost:5456/farmers/product/all', {
@@ -54,7 +36,7 @@ const Product = () => {
       const data = await response.json();
       if (response.ok && data.status === 201) {
         setAllProducts(data.productList || []);
-        console.log(allProducts);
+        setFilteredProducts(data.productList || []);
       } else {
         throw new Error(data.message || 'Failed to fetch products');
       }
@@ -64,34 +46,103 @@ const Product = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (productId && token) {
-      fetchProductById(productId, token);
-    }
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen(true);
   };
 
-  const getImageUrl = (imageName) => {
-    // console.log(imageName);
-    const image = `http://localhost:5456${imageName}`;
-    // console.log(image);
-    return image;
-  };
+  // Filter Products Based on Search Query and Category
+  useEffect(() => {
+    let filtered = allProducts;
+    
+    if (searchQuery) {
+      filtered = filtered.filter(product => 
+        product.prod_Name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (category) {
+      filtered = filtered.filter(product => product.category === category);
+    }
+
+    setFilteredProducts(filtered);
+  }, [searchQuery, category, allProducts]);
 
   return (
     <>
-  <NavBar />
-  <Stack >
-  
-    <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold',mt:'10px', textAlign: 'center'}}>
-    Products ({allProducts.length})
+      <NavBar />
+      <Stack spacing={2} sx={{ px: 3, mt: 2 }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+          Products ({filteredProducts.length})
         </Typography>
-    <Divider sx={{
-      height:'3px',
-    }}></Divider>
-    <ProductGrid allProducts={allProducts} />
-  </Stack>
-</>
+
+        <Divider sx={{ height: '3px' }} />
+
+        {/* Search Bar */}
+        <Stack direction="row" gap='20px' justifyContent='space-between'>
+          <Stack direction='row' marginLeft='60px' alignItems='end' gap='10px'>
+            <SearchIcon></SearchIcon>
+          <TextField
+          label="Search by Product"
+          size="small"
+          variant="standard"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+          </Stack>
+
+          <Stack direction="row" marginRight="60px" alignItems="end" gap="10px">
+      <Chip
+        label={`FILTER: ${category || 'ALL'}`}
+        style={{ backgroundColor: 'lightgrey', cursor: 'pointer' }}
+        onClick={handleClick}
+      />
+      <Select
+        value={category}
+        onChange={(e) => {
+          setCategory(e.target.value);
+          setOpen(false);
+        }}
+        open={open}
+        onClose={() => setOpen(false)}
+        MenuProps={{
+          anchorEl: anchorEl,
+          open: open,
+          onClose: () => setOpen(false),
+          PaperProps: {
+            style: {
+              marginTop: 8, // Adjusts spacing between chip and dropdown
+            },
+          },
+        }}
+        sx={{ display: 'none' }} // Hide default select UI
+      >
+        <MenuItem value="">ALL</MenuItem>
+        <MenuItem value="FRESH">FRESH</MenuItem>
+        <MenuItem value="ORGANIC">ORGANIC</MenuItem>
+      </Select>
+    </Stack>
+       
+        {/* Category Filter */}
+        {/* <FormControl sx={{width: '200px' , marginRight: '60px'}} >
+          <InputLabel>Filter by Category</InputLabel>
+          <Select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="FRESH">FRESH</MenuItem>
+            <MenuItem value="ORGANIC">ORGANIC</MenuItem>
+          </Select>
+        </FormControl> */}
+        </Stack>
+        
+
+        <ProductGrid allProducts={filteredProducts} />
+      </Stack>
+    </>
   );
 };
 
