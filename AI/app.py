@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request,send_file ,  jsonify
 from tensorflow.keras.models import load_model
 from pymongo import MongoClient
 import numpy as np
@@ -10,9 +10,94 @@ from datetime import datetime
 from flask import send_file
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
 
+from fpdf import FPDF
+import tempfile
+
+
+
+
+
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+def generate_receipt(payment_data):
+    # Initialize PDF
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    
+    # Title
+    pdf.set_font("Arial", style='B', size=16)
+    pdf.cell(0, 10, "Payment Receipt", align='C', ln=True)
+    pdf.ln(10)
+    
+    # Set up columns for Payment and Farmer Details
+    pdf.set_font("Arial", style='B', size=14)
+    pdf.cell(90, 10, "Payment Details", align='L')
+    pdf.cell(90, 10, "Farmer Details", align='R', ln=True)
+    pdf.ln(5)
+    
+    # Payment Details on left
+    pdf.set_font("Arial", size=12)
+    payment_details = [
+        f"Payment ID: {payment_data['paymentId']}",
+        f"Amount: {payment_data['amount']}Rs",
+        f"Payment Type: {payment_data['paymentType']}",
+        f"Payment Date: {payment_data['paymentDate']}",
+        f"Payment Status: {payment_data['paymentStatus']}"
+    ]
+    farmer = payment_data["order"]["product"]["farmerDTO"]
+    farmer_details = [
+        f"Farmer Name: {farmer['name']}",
+        f"Farm Location: {farmer['farmLocation']}",
+        f"Farm Type: {farmer['farmType']}"
+    ]
+    
+    # Display details side by side
+    for pay, farm in zip(payment_details, farmer_details):
+        pdf.cell(90, 10, pay, align='L')
+        pdf.cell(0, 10, farm, align='R', ln=True)
+    pdf.ln(10)
+    
+    # Product and Order Details Table
+    pdf.set_font("Arial", style='B', size=14)
+    pdf.cell(0, 10, "Order Details", ln=True)
+    
+    # Check if there's enough space, if not, add a new page
+    if pdf.get_y() > 250:  # Assuming 250 is near the bottom of the page
+        pdf.add_page()
+    
+    pdf.set_font("Arial", style='B', size=12)
+    headers = ["Product Name", "Amount (Rs.)", "Quantity", "Total Price (Rs.)"]
+    widths = [60, 30, 30, 30]  # Adjusted widths to fit better
+    
+    for header, width in zip(headers, widths):
+        pdf.cell(width, 10, header, border=1, align='C')
+    pdf.ln()
+    
+    pdf.set_font("Arial", size=12)
+    product = payment_data["order"]["product"]
+    order_details = [
+        product["prod_Name"],
+        str(payment_data['amount']),
+        str(payment_data['order']['quantity']),
+        str(payment_data['order']['total_Price'])
+    ]
+    
+    for detail, width in zip(order_details, widths):
+        pdf.cell(width, 10, detail, border=1, align='C')
+    pdf.ln(10)
+    
+    # Closing message
+    pdf.cell(0, 10, "Thank you for your payment!", align='C', ln=True)
+    
+    # Save PDF to a temporary file
+    temp_pdf = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    pdf.output(temp_pdf.name)
+    
+    return temp_pdf.name
 # Load the trained model
 model_path = "price_recommendation_model.keras"
 price_model = load_model(model_path)
@@ -245,6 +330,25 @@ def favicon():
     Handle the browser's favicon.ico request.
     """
     return "", 204
+
+
+@app.route("/generate-receipt", methods=['POST'])
+def generate_receipt_api():
+    
+
+    try:
+        print(request.headers) 
+        data = request.get_json()
+        if not data or "payment" not in data or "payment" not in data["payment"]:
+            return jsonify({"error": "Invalid payment data"}), 400
+        
+        # Extract the correct payment object
+        payment = data["payment"]["payment"]
+        pdf_path = generate_receipt(payment)
+        return send_file(pdf_path, as_attachment=True, download_name="payment_receipt.pdf", mimetype="application/pdf")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return jsonify({"error": "An error occurred while generating the receipt"}), 500
 
 if __name__ == "__main__":
     # Run the Flask app
