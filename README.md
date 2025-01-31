@@ -75,6 +75,8 @@ cd agritrading_backend
 ```
 Note : Easier to run in Intellij
 
+
+
 #### B. Flask API (ML Models)
 
 ```bash
@@ -82,6 +84,10 @@ cd AI
 pip install -r requirements.txt
 python app.py
 ```
+#### C. Testing API (postman)
+
+- Import the Postman Collection  **Agritrading.postman_collection.json** 
+- Create a env_variable auth_token
 
 ### 3. Setting Up the Frontend
 
