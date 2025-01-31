@@ -1,5 +1,9 @@
 # AgriTrade - AI-Powered E-Commerce for Farmers and Traders
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bdb9fb5e-464f-42a2-a659-7598e52baf87" width="300">
+</p>
+
 ## Introduction
 
 Artificial Intelligence (AI) and Machine Learning (ML) are transforming the agricultural sector by improving efficiency, transparency, and decision-making. Traditional agricultural trading systems struggle with price fluctuations, lack of real-time market insights, and dependency on intermediaries. **AgriTrade** aims to solve these challenges by providing a fair and transparent trading platform for farmers and traders.
