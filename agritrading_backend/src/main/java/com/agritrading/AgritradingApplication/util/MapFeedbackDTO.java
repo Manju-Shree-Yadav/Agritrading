@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 public class MapFeedbackDTO {
     public static FeedbackDTO map(Feedback feedback){
         return  FeedbackDTO.builder()
-                .productId(feedback.getProductId())
-                .customerId(feedback.getCustomerId())
+                .customer(MapCustomerDTO.map(feedback.getCustomer()))
+                .product(MapProductDTO.map(feedback.getProduct()))
                 .customerPhone(feedback.getCustomerPhone())
                 .description(feedback.getDescription())
                 .rating(feedback.getRating())

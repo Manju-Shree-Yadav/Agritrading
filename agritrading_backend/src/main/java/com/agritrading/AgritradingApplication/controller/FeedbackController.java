@@ -26,7 +26,9 @@ public class FeedbackController {
     private FeebackRepository feedbackRepo;
 
     @PostMapping("/addfeedback")
-    public ResponseEntity<Response> addFeedback(@RequestBody AddFeedbackRequestDTO feedback) {
+    public ResponseEntity<Response> addFeedback(Authentication authentication , @RequestBody AddFeedbackRequestDTO feedback) {
+        int customerId = customerId(authentication);
+        feedback.setCustomerId(customerId);
         Feedback feedback1 =  FeedbackService.addFeedback(feedback);
         Response response = Response.builder()
                 .status(HttpStatus.CREATED.value())

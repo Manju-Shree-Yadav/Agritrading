@@ -1,5 +1,7 @@
 package com.agritrading.AgritradingApplication.dto;
 
+import com.agritrading.AgritradingApplication.model.Customers;
+import com.agritrading.AgritradingApplication.model.Products;
 import lombok.*;
 
 @Getter
@@ -9,9 +11,9 @@ import lombok.*;
 @Builder
 public class FeedbackDTO {
 
-    private int customerId;
+    private CustomerDTO customer;
     private String customerPhone;
-    private int productId;
+    private ProductDTO product;
     private int rating;
     private String description;
 }

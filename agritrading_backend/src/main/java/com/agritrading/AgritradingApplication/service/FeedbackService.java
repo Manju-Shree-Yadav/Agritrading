@@ -1,7 +1,10 @@
 package com.agritrading.AgritradingApplication.service;
 
 import com.agritrading.AgritradingApplication.dto.AddFeedbackRequestDTO;
+import com.agritrading.AgritradingApplication.model.Customers;
 import com.agritrading.AgritradingApplication.model.Feedback;
+import com.agritrading.AgritradingApplication.model.Products;
+import com.agritrading.AgritradingApplication.repo.CustomersRepository;
 import com.agritrading.AgritradingApplication.repo.FeebackRepository;
 import com.agritrading.AgritradingApplication.repo.OrdersRepository;
 import com.agritrading.AgritradingApplication.repo.ProductsRepository;
@@ -18,13 +21,17 @@ public class FeedbackService {
     private ProductsRepository productsRepository;
     @Autowired
     private OrdersRepository ordersRepository;
+    @Autowired
+    private CustomersRepository customersRepository;
 
     public Feedback addFeedback(AddFeedbackRequestDTO feedback) {
 
+        Customers customer = customersRepository.getById(feedback.getCustomerId());
+        Products product = productsRepository.getById(feedback.getProductId());
         Feedback feedback1 = new Feedback();
-        feedback1.setCustomerId(feedback.getCustomerId());
+        feedback1.setCustomer(customer);
         feedback1.setCustomerPhone(feedback.getCustomerPhone());
-        feedback1.setProductId(feedback.getProductId());
+        feedback1.setProduct(product);
         feedback1.setRating(feedback.getRating());
         feedback1.setDescription(feedback.getDescription());
         return feebackRepository.save(feedback1);
