@@ -1,9 +1,8 @@
 package com.agritrading.AgritradingApplication.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Feedback {
@@ -11,10 +10,17 @@ public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne
+    @JoinColumn(name = "productId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Products  product;
 
-    private int customerId;
+    @ManyToOne
+    @JoinColumn(name = "customerId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Customers customer;
     private String customerPhone;
-    private int  productId;
+
     private int rating;
     private String description;
 
@@ -27,16 +33,17 @@ public class Feedback {
     }
 
 
-
-    public int getCustomerId() {
-        return customerId;
+    public void setProduct(Products product) {
+        this.product = product;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public Customers getCustomer() {
+        return customer;
     }
 
-
+    public void setCustomer(Customers customer) {
+        this.customer = customer;
+    }
 
     public String getCustomerPhone() {
         return customerPhone;
@@ -46,13 +53,8 @@ public class Feedback {
         this.customerPhone = customerPhone;
     }
 
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public Products getProduct() {
+        return product;
     }
 
     public int getRating() {
