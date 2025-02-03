@@ -14,7 +14,9 @@ const ConsumerHome = () => {
     const [userName, setUserName] = useState('');
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [feedbacks, setFeedbacks] = useState([]);
     const [category, setCategory] = useState('');
     const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
@@ -83,6 +85,28 @@ const ConsumerHome = () => {
         setShowModal(true);
     };
 
+    const handleFeedbackClick = async (product) => {
+        setSelectedProduct(product);
+        try {
+            const response = await fetch(`http://localhost:5456/farmer/getfeedback?id=${product.prod_id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setFeedbacks(data.feedbackList || []);
+            } else {
+                setFeedbacks([]);
+            }
+        } catch (error) {
+            console.error('Error fetching feedback:', error);
+            setFeedbacks([]);
+        } finally {
+            setShowFeedbackModal(true);
+        }
+    };
+    
     const getImageUrl = (imageName) => {
     
         const urlimg =  `http://localhost:5456${imageName}`;
@@ -208,7 +232,13 @@ const ConsumerHome = () => {
         <Card.Text>{product.prod_Description}</Card.Text>
         <Card.Text>Price: ₹{product.prod_Price}</Card.Text>
         <Card.Text>Stock: {product.prod_Stock}</Card.Text>
-        {product.prod_Stock> 0 ?  (<Button variant="primary" onClick={() => handleBuyClick(product)}>Buy</Button>):(<Button variant="primary" disabled onClick={() => handleBuyClick(product)}>Buy</Button>)}
+        {product.prod_Stock> 0 ?  (<>
+            <Button variant="primary" onClick={() => handleBuyClick(product)}>Buy</Button>
+            <Button variant="secondary" onClick={() => handleFeedbackClick(product)} className="ms-2">Feedback</Button>
+        </>):(<>
+            <Button variant="primary" disabled onClick={() => handleBuyClick(product)}>Buy</Button>
+            <Button variant="secondary" onClick={() => handleFeedbackClick(product)} className="ms-2">Feedback</Button>
+        </>)}
     </Card.Body>
 </Card>
 
@@ -244,6 +274,30 @@ const ConsumerHome = () => {
                     <Button variant="primary" onClick={handleOrderSubmit}>Place Order</Button>
                 </Modal.Footer>
             </Modal>
+
+            <Modal show={showFeedbackModal} onHide={() => setShowFeedbackModal(false)}>
+    <Modal.Header closeButton>
+        <Modal.Title>Product Feedback</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        {feedbacks.length > 0 ? (
+            feedbacks.map((feedback, index) => (
+                <div key={index} className="mb-3">
+                    <p><strong>{feedback.customer.name}</strong> ({feedback.customer.contactInfo})</p>
+                    <p>Rating: {feedback.rating}/5</p>
+                    <p><strong>Review:</strong> {feedback.description}</p>
+                    <hr />
+                </div>
+            ))
+        ) : (
+            <p>No feedback available for this product.</p>
+        )}
+    </Modal.Body>
+    <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowFeedbackModal(false)}>Close</Button>
+    </Modal.Footer>
+</Modal>
+
         </div>
     );
 };
