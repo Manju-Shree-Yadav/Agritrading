@@ -90,6 +90,24 @@ const ConsumerOrder = () => {
         }
     };
 
+    useEffect(() => {
+        if (deliveryDetails) {
+            const stepIndex = ['Ordered', 'Shipped', 'Out for Delivery', 'Delivered'].indexOf(deliveryDetails.status);
+            updateStatus(stepIndex);
+        }
+    }, [deliveryDetails]);
+
+    const updateStatus = (stepIndex) => {
+        const steps = document.querySelectorAll(".step");
+        steps.forEach((step, index) => {
+            if (index <= stepIndex) {
+                step.classList.add("active");
+            } else {
+                step.classList.remove("active");
+            }
+        });
+    };
+
     return (
         <div>
             <NavBar />
@@ -158,6 +176,27 @@ const ConsumerOrder = () => {
                             <p><strong>Tracking Number:</strong> {deliveryDetails.trackingNumber}</p>
                             <p><strong>Estimated Arrival Time:</strong> {deliveryDetails.estimatedArrivalTime}</p>
                             <p><strong>Delivery Address:</strong> {deliveryDetails.deliveryAddress}</p>
+                            <div className="tracker">
+                                <div className="step">
+                                    <div className="circle">✔</div>
+                                    <div className="line"></div>
+                                    <div className="status-text">Ordered</div>
+                                </div>
+                                <div className="step">
+                                    <div className="circle">✔</div>
+                                    <div className="line"></div>
+                                    <div className="status-text">Shipped</div>
+                                </div>
+                                <div className="step">
+                                    <div className="circle">✔</div>
+                                    <div className="line"></div>
+                                    <div className="status-text">Out for Delivery</div>
+                                </div>
+                                <div className="step">
+                                    <div className="circle">✔</div>
+                                    <div className="status-text">Delivered</div>
+                                </div>
+                            </div>
                         </div>
                     ) : (
                         <p>No delivery details available.</p>
