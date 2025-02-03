@@ -14,5 +14,5 @@ public interface FeebackRepository extends JpaRepository<Feedback,Integer> {
     List<Feedback> getByCustomerId(int customerId);
 
     @Query("select f from Feedback f where f.product.prod_id=:productId")
-    Feedback getByProductId(int productId);
+    List<Feedback> getByProductId(int productId);
 }

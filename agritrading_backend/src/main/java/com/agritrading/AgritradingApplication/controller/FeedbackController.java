@@ -70,11 +70,11 @@ public class FeedbackController {
         String username = authentication.getName();
         Users user = userRepo.findByUsername(username);
 
-        Feedback feedback = feedbackRepo.getByProductId(id.get());
+        List<Feedback> feedback = feedbackRepo.getByProductId(id.get());
         Response response = Response.builder()
                 .status(HttpStatus.CREATED.value())
                 .message("Feedback added")
-                .feedback(MapFeedbackDTO.map(feedback))
+                .feedbackList(MapFeedbackDTO.map(feedback))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
