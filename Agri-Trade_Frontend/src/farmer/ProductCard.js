@@ -102,6 +102,8 @@ export default function ProductCard({ product }) {
     return text.length > length ? text.substring(0, length) + '...' : text;
   };
 
+  const productName = product && product.prod_Name ? product.prod_Name[0].toUpperCase() : '';
+
   return (
     <Card
       sx={{
@@ -120,7 +122,7 @@ export default function ProductCard({ product }) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500], width: 40, height: 40, fontSize: '1rem' }} aria-label="product">
-            {product.prod_Name[0].toUpperCase()}
+            {productName}
           </Avatar>
         }
        

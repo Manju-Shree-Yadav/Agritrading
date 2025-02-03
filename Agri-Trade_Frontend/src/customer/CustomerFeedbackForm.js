@@ -20,7 +20,9 @@ const CustomerFeedbackForm = () => {
     if (savedAuth && savedAuth.token) {
       setToken(savedAuth.token);
       fetchProfile(savedAuth.token);
-      fetchProducts();
+      fetchProducts(savedAuth.token);
+      fetchFeedback(savedAuth.token);
+      console.log('Token found:', savedAuth.token);
     } else {
       alert('No token found. Please log in first.');
       navigate('/login');
@@ -37,9 +39,11 @@ const CustomerFeedbackForm = () => {
       });
 
       const data = await response.json();
+      console.log('Fetched profile data:', data);
 
       if (response.ok) {
         setProfileData(data.customer);
+        console.log('Customer ID:', data.customer.customerId);
       } else {
         throw new Error(data.message || 'Failed to fetch profile');
       }
@@ -49,9 +53,9 @@ const CustomerFeedbackForm = () => {
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (token) => {
     try {
-      const response = await fetch('http://localhost:5456/products', {
+      const response = await fetch('http://localhost:5456/customer/products', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,7 +65,11 @@ const CustomerFeedbackForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setProducts(data.products);
+        const productList = data.productList.map(product => ({
+          id: product.prod_id,
+          name: product.prod_Name
+        }));
+        setProducts(productList);
       } else {
         throw new Error(data.message || 'Failed to fetch products');
       }
@@ -71,9 +79,9 @@ const CustomerFeedbackForm = () => {
     }
   };
 
-  const fetchFeedback = async () => {
+  const fetchFeedback = async (token) => {
     try {
-      const response = await fetch('http://localhost:5456/feedback', {
+      const response = await fetch('http://localhost:5456/customer/getfeedbacks', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -81,9 +89,17 @@ const CustomerFeedbackForm = () => {
       });
 
       const data = await response.json();
+      console.log('Fetched feedback data:', data);
 
       if (response.ok) {
-        setFeedbackList(data.feedback);
+        const feedbackList = data.feedbackList.map(fb => ({
+          productId: fb.productId,
+          customerId: fb.customerId,
+          customerPhone: fb.customerPhone,
+          rating: fb.rating,
+          description: fb.description,
+        }));
+        setFeedbackList(feedbackList);
       } else {
         throw new Error(data.message || 'Failed to fetch feedback');
       }
@@ -95,18 +111,21 @@ const CustomerFeedbackForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Submitting feedback for customer ID:', profileData.customerId);
+    console.log('Profile Data:', profileData);
     try {
-      const response = await fetch('http://localhost:5456/feedback', {
+      const response = await fetch('http://localhost:5456/addfeedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          customerId: profileData.id,
           productId: selectedProduct,
+          customerId: profileData.customerId,
+          customerPhone: profileData.contactInfo,
           rating,
-          feedback,
+          description: feedback,
         }),
       });
 
@@ -135,6 +154,7 @@ const CustomerFeedbackForm = () => {
             <Card.Body>
               <h4>Submit Feedback</h4>
               <Form onSubmit={handleSubmit}>
+                
                 <Form.Group controlId="customerName" className="mb-3">
                   <Form.Label>Customer Name</Form.Label>
                   <Form.Control type="text" value={profileData?.name || ''} readOnly />
@@ -207,11 +227,11 @@ const CustomerFeedbackForm = () => {
             feedbackList.map((fb, index) => (
               <Card key={index} className="mb-3 shadow-sm">
                 <Card.Body>
-                  <Card.Title>{fb.customerName}</Card.Title>
+                  <Card.Title>Product ID: {fb.productId}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
-                    {fb.rating} Stars
+                    Customer ID: {fb.customerId} - {fb.rating} Stars
                   </Card.Subtitle>
-                  <Card.Text>{fb.feedback}</Card.Text>
+                  <Card.Text>{fb.description}</Card.Text>
                 </Card.Body>
               </Card>
             ))

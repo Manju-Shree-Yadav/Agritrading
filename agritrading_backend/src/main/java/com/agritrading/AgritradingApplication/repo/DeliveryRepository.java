@@ -18,6 +18,8 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
     @Query("SELECT d FROM Delivery d JOIN d.order o WHERE o.customer.customerId =:customerId")
     List<Delivery> findForCustomer(@Param("customerId") int customerId);
 
-    @Query("SELECT d FROM Delivery d WHERE d.order=:orderId")
-    Delivery findByOrderId(@Param("orderId")  int orderId);
+    @Query("SELECT d FROM Delivery d WHERE d.order.order_Id = :orderId ORDER BY d.delivery_id DESC LIMIT 1")
+    Delivery findByOrderId(@Param("orderId") int orderId);
+
+
 }
