@@ -323,6 +323,51 @@ def fetch_data():
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+import random
+
+@app.route("/get_graph_data", methods=["GET"])
+def get_graph_data():
+    """
+    Endpoint to fetch price data for a given commodity and month.
+    Input: Query parameters 'commodity' and 'month'
+    Output: JSON containing random price trends
+    """
+    try:
+        # Get query parameters
+        commoditystring = request.args.get("commodity")
+        month = request.args.get("month")
+
+        if not commoditystring or not month:
+            return jsonify({"error": "Missing required query parameters: 'commodity' and 'month'"}), 400
+
+        commodity_doc = db.commodity.find_one({"commodity": commoditystring})
+        if not commodity_doc:
+            return jsonify({"error": f"Commodity '{commoditystring}' not found in the database."}), 404
+
+        # Extract encoded values
+        commodity = commodity_doc.get("commodity_encoded")
+        month = int(month)  # Ensure month is an integer
+        
+        # Fetch prices from MongoDB
+        filter = {'commodity': commodity, 'month': month}
+        data = list(client['Agritrading']['commodity_prices'].find(filter, {"_id": 0, "modal_price": 1}))
+
+        if not data:
+            return jsonify({"error": f"No data found for the given filters: {filter}"}), 404
+
+        # Randomly select 10 prices from the dataset (or all if less than 10)
+        random_prices = random.sample(data, min(len(data), 10))
+
+        # Convert MongoDB data to JSON format
+        response_data = [{"price": item["modal_price"]} for item in random_prices]
+
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 @app.route("/favicon.ico")
 def favicon():
