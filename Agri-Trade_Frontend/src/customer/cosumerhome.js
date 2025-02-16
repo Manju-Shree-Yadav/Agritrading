@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { Spinner, Container, Row, Col, Card, Button, Modal, Form } from 'react-bootstrap'; // Import Bootstrap components
 import { Divider, Stack, Typography, TextField, MenuItem, Select, InputLabel, FormControl, Chip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { StarFill, Star } from "react-bootstrap-icons";
 
 const ConsumerHome = () => {
     const [token, setToken] = useState(null);
@@ -142,6 +143,16 @@ const ConsumerHome = () => {
         }
     };
 
+    const renderStars = (rating) => {
+        return (
+            <>
+                {[...Array(5)].map((_, i) =>
+                    i < rating ? <StarFill key={i} color="#ffc107" /> : <Star key={i} color="#ddd" />
+                )}
+            </>
+        );
+    };
+
     return (
         <div>
             <NavBar />
@@ -260,50 +271,29 @@ const ConsumerHome = () => {
 
             
 
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Place Order</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group controlId="productId">
-                            <Form.Label>Product ID</Form.Label>
-                            <Form.Control type="text" value={selectedProduct?.prod_id || ''} readOnly />
-                        </Form.Group>
-                        <Form.Group controlId="quantity" className="mt-3">
-                            <Form.Label>Quantity</Form.Label>
-                            <Form.Control type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" />
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
-                    <Button variant="primary" onClick={handleOrderSubmit}>Place Order</Button>
-                </Modal.Footer>
-            </Modal>
-
-            <Modal show={showFeedbackModal} onHide={() => setShowFeedbackModal(false)}>
-    <Modal.Header closeButton>
-        <Modal.Title>Product Feedback</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        {feedbacks.length > 0 ? (
-            feedbacks.map((feedback, index) => (
-                <div key={index} className="mb-3">
-                    <p><strong>{feedback.customer.name}</strong> ({feedback.customer.contactInfo})</p>
-                    <p>Rating: {feedback.rating}/5</p>
-                    <p><strong>Review:</strong> {feedback.description}</p>
-                    <hr />
-                </div>
-            ))
-        ) : (
-            <p>No feedback available for this product.</p>
-        )}
-    </Modal.Body>
-    <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowFeedbackModal(false)}>Close</Button>
-    </Modal.Footer>
-</Modal>
+            <Modal show={showFeedbackModal} onHide={() => setShowFeedbackModal(false)} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>⭐ Product Feedback</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {feedbacks.length > 0 ? (
+                    feedbacks.map((feedback, index) => (
+                        <div key={index} className="mb-3 p-3 border rounded shadow-sm">
+                            <p><strong>{feedback.customer.name}</strong> </p>
+                            <p>
+                                <strong>Rating:</strong> {renderStars(feedback.rating)}
+                            </p>
+                            <p><strong>Review:</strong> {feedback.description}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-muted">No feedback available for this product.</p>
+                )}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-secondary" onClick={() => setShowFeedbackModal(false)}>Close</Button>
+            </Modal.Footer>
+        </Modal>
 
         </div>
     );
