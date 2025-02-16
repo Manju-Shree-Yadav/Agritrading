@@ -222,11 +222,18 @@ const ConsumerHome = () => {
                             filteredProducts.map((product, index) => (
                                 <Col key={product.prod_id || index} md={4} className="mb-4">
                                     <Card style={{ height: "700px", overflow: "hidden" }}>
-    <Card.Img 
-        variant="top" 
-        src={getImageUrl(product.prod_Img)} 
-        alt={product.prod_Name} 
-    />
+                                    <Card.Img 
+    variant="top" 
+    src={getImageUrl(product.prod_Img)} 
+    alt={product.prod_Name} 
+    style={{
+        height: "400px",      // Fixed height for consistency
+        width: "100%",        // Ensures it spans full card width
+        objectFit: "cover",   // Crops image while maintaining aspect ratio
+        borderRadius: "8px"   // Optional: Adds a smoother UI
+    }} 
+/>
+
     <Card.Body>
         <Card.Title>{product.prod_Name}</Card.Title>
         <Card.Text>{product.prod_Description}</Card.Text>
