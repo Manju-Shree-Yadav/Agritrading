@@ -13,7 +13,7 @@ import Payment from './customer/payment';
 import Insight from './farmer/InsightPage';
 import InsightPage from './farmer/InsightProductPage';
 import Register from './components/register';
-import CustomerProfilePage from './customer/CustomerProfilePage';
+import CustomerNavPage from './customer/CustomerNavPage';
 
 const App = () => {
   return (
@@ -32,7 +32,7 @@ const App = () => {
         <Route path="/insight" element={<Insight/>}/>
         <Route path="/insightproduct" element={<InsightPage/>}/>
         <Route path="/register" element={<Register/>}/>
-        <Route path="/customer/feed" element={<CustomerProfilePage />} />
+        <Route path="/customer/feed" element={<CustomerNavPage />} />
       </Routes>
     </Router>
   );

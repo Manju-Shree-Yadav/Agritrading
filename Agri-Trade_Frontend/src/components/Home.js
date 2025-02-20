@@ -5,9 +5,9 @@ import '../styles/global.css';
 
 function Home() {
   const allProducts = [
-    { prod_id: 1, prod_Img: img15, prod_Name: 'Pine-Apple', prod_Description: 'A tropical fruit rich in vitamins and enzymes. Great for digestion and boosting immunity.', prod_Price: '$10' },
-    { prod_id: 2, prod_Img: img16, prod_Name: 'Apple', prod_Description: 'A nutritious fruit that is high in fiber and vitamin C. Perfect for a healthy snack.', prod_Price: '$15' },
-    { prod_id: 3, prod_Img: img17, prod_Name: 'Kiwi', prod_Description: 'A small fruit packed with vitamin C and antioxidants. Helps improve skin health.', prod_Price: '$12' },
+    { prod_id: 1, prod_Img: img15, prod_Name: 'Pine-Apple', prod_Description: 'A tropical fruit rich in vitamins and enzymes. Great for digestion and boosting immunity.', prod_Price: '₹30' },
+    { prod_id: 2, prod_Img: img16, prod_Name: 'Apple', prod_Description: 'A nutritious fruit that is high in fiber and vitamin C. Perfect for a healthy snack.', prod_Price: '₹150' },
+    { prod_id: 3, prod_Img: img17, prod_Name: 'Kiwi', prod_Description: 'A small fruit packed with vitamin C and antioxidants. Helps improve skin health.', prod_Price: '₹120' },
   ];
 
   const getImageUrl = (img) => img;
@@ -36,7 +36,7 @@ function Home() {
         className="carousel slide"
         style={{ height: '705px' }}
         data-bs-ride="carousel"
-        data-bs-interval="7000"
+        data-bs-interval="2000"
       >
         <div className="carousel-indicators">
           {Array.from({ length: 3 }, (_, i) => (

@@ -295,6 +295,28 @@ const ConsumerHome = () => {
             </Modal.Footer>
         </Modal>
 
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Place Order</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="productId">
+                            <Form.Label>Product ID</Form.Label>
+                            <Form.Control type="text" value={selectedProduct?.prod_id || ''} readOnly />
+                        </Form.Group>
+                        <Form.Group controlId="quantity" className="mt-3">
+                            <Form.Label>Quantity</Form.Label>
+                            <Form.Control type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={handleOrderSubmit}>Place Order</Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     );
 };

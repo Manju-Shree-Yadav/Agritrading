@@ -5,7 +5,7 @@ import CustomerFeedbackForm from './CustomerFeedbackForm';
 import { Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CustomerProfilePage = () => {
+const CustomerNavPage = () => {
   const [token, setToken] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -70,4 +70,4 @@ const CustomerProfilePage = () => {
   );
 };
 
-export default CustomerProfilePage;
+export default CustomerNavPage;

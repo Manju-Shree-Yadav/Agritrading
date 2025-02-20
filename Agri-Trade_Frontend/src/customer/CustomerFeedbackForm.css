@@ -1,0 +1,69 @@
+/* CustomerFeedbackForm.css */
+.star-rating {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-start; /* Align stars to the left */
+}
+
+.star {
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.star:hover {
+  transform: scale(1.2);
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: #007bff;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #007bff, #00b4ff);
+  border: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #0056b3, #007bff);
+  transform: scale(1.05);
+}
+
+.feedback-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.feedback-img:hover {
+  transform: scale(1.1);
+}
+
+.card-body {
+  align-items: center;
+}
+
+.text-success {
+  font-weight: 500;
+}
+
+.badge {
+  font-size: 0.9em;
+  vertical-align: middle;
+}
+
+/* Ensure reviews section has padding to avoid overlap */
+.pl-5 {
+  padding-left: 3rem !important; /* Adds padding to the left of reviews */
+}

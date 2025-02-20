@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, Alert, Card } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert, Card, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaStar } from 'react-icons/fa';
+import './CustomerFeedbackForm.css';
 
 const CustomerFeedbackForm = () => {
   const [token, setToken] = useState(null);
@@ -14,7 +15,12 @@ const CustomerFeedbackForm = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState('');
   const navigate = useNavigate();
-
+  const getImageUrl = (imageName) => {
+    
+    const urlimg =  `http://localhost:5456${imageName}`;
+    console.log(urlimg);
+    return urlimg;
+  };
   useEffect(() => {
     const savedAuth = JSON.parse(localStorage.getItem('authData'));
     if (savedAuth && savedAuth.token) {
@@ -92,14 +98,7 @@ const CustomerFeedbackForm = () => {
       console.log('Fetched feedback data:', data);
 
       if (response.ok) {
-        const feedbackList = data.feedbackList.map(fb => ({
-          productId: fb.productId,
-          customerId: fb.customerId,
-          customerPhone: fb.customerPhone,
-          rating: fb.rating,
-          description: fb.description,
-        }));
-        setFeedbackList(feedbackList);
+        setFeedbackList(data.feedbackList);
       } else {
         throw new Error(data.message || 'Failed to fetch feedback');
       }
@@ -146,31 +145,51 @@ const CustomerFeedbackForm = () => {
     }
   };
 
+  const renderStars = (rating) => {
+    return [...Array(5)].map((_, index) => (
+      <FaStar
+        key={index}
+        size={20}
+        color={index < rating ? '#ffc107' : '#e4e5e9'}
+      />
+    ));
+  };
+
   return (
-    <Container className="mt-5">
+    <Container className="my-5">
       <Row className="justify-content-center">
         <Col md={8}>
-          <Card className="shadow-sm">
-            <Card.Body>
-              <h4>Submit Feedback</h4>
+          <Card className="shadow-lg border-0 rounded-3 animate__animated animate__fadeIn">
+            <Card.Body className="p-5">
+              <h4 className="text-center mb-4 text-primary fw-bold">We Value Your Feedback!</h4>
               <Form onSubmit={handleSubmit}>
-                
-                <Form.Group controlId="customerName" className="mb-3">
-                  <Form.Label>Customer Name</Form.Label>
-                  <Form.Control type="text" value={profileData?.name || ''} readOnly />
+                <Form.Group controlId="customerName" className="mb-4">
+                  <Form.Label className="fw-semibold">Your Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={profileData?.name || ''}
+                    readOnly
+                    className="rounded-pill bg-light"
+                  />
                 </Form.Group>
-                <Form.Group controlId="phoneNumber" className="mb-3">
-                  <Form.Label>Phone Number</Form.Label>
-                  <Form.Control type="text" value={profileData?.contactInfo || ''} readOnly />
+                <Form.Group controlId="phoneNumber" className="mb-4">
+                  <Form.Label className="fw-semibold">Phone Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={profileData?.contactInfo || ''}
+                    readOnly
+                    className="rounded-pill bg-light"
+                  />
                 </Form.Group>
-                <Form.Group controlId="product" className="mb-3">
-                  <Form.Label>Product</Form.Label>
+                <Form.Group controlId="product" className="mb-4">
+                  <Form.Label className="fw-semibold">Select Product</Form.Label>
                   <Form.Control
                     as="select"
                     value={selectedProduct}
                     onChange={(e) => setSelectedProduct(e.target.value)}
+                    className="rounded-pill"
                   >
-                    <option value="">Select Product</option>
+                    <option value="">Choose a Product</option>
                     {products.map((product) => (
                       <option key={product.id} value={product.id}>
                         {product.name}
@@ -178,9 +197,9 @@ const CustomerFeedbackForm = () => {
                     ))}
                   </Form.Control>
                 </Form.Group>
-                <Form.Group controlId="rating" className="mb-3">
-                  <Form.Label>Rating</Form.Label>
-                  <div>
+                <Form.Group controlId="rating" className="mb-4">
+                  <Form.Label className="fw-semibold">Rate Your Experience</Form.Label>
+                  <div className="star-rating">
                     {[...Array(5)].map((star, index) => {
                       const ratingValue = index + 1;
                       return (
@@ -193,7 +212,8 @@ const CustomerFeedbackForm = () => {
                             style={{ display: 'none' }}
                           />
                           <FaStar
-                            size={30}
+                            size={35}
+                            className="star"
                             color={ratingValue <= (hover || rating) ? '#ffc107' : '#e4e5e9'}
                             onMouseEnter={() => setHover(ratingValue)}
                             onMouseLeave={() => setHover(null)}
@@ -203,17 +223,23 @@ const CustomerFeedbackForm = () => {
                     })}
                   </div>
                 </Form.Group>
-                <Form.Group controlId="feedback" className="mb-3">
-                  <Form.Label>Feedback</Form.Label>
+                <Form.Group controlId="feedback" className="mb-4">
+                  <Form.Label className="fw-semibold">Your Feedback</Form.Label>
                   <Form.Control
                     as="textarea"
-                    rows={3}
+                    rows={4}
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
+                    placeholder="Tell us about your experience..."
+                    className="rounded-3"
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit">
-                  Submit
+                <Button
+                  variant="primary"
+                  type="submit"
+                  className="w-100 rounded-pill py-2 fw-semibold shadow-sm"
+                >
+                  Submit Feedback
                 </Button>
               </Form>
             </Card.Body>
@@ -221,22 +247,46 @@ const CustomerFeedbackForm = () => {
         </Col>
       </Row>
       <Row className="justify-content-center mt-5">
-        <Col md={8}>
-          <h4>Customer Feedback</h4>
+        <Col md={10}>
+          <h4 className="text-center mb-4 text-primary fw-bold">Customer Reviews</h4>
           {feedbackList.length > 0 ? (
             feedbackList.map((fb, index) => (
-              <Card key={index} className="mb-3 shadow-sm">
-                <Card.Body>
-                  <Card.Title>Product ID: {fb.productId}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    Customer ID: {fb.customerId} - {fb.rating} Stars
-                  </Card.Subtitle>
-                  <Card.Text>{fb.description}</Card.Text>
+              <Card key={index} className="mb-4 shadow-sm border-0 rounded-3 animate__animated animate__fadeInUp">
+                <Card.Body className="d-flex">
+                  <div className="me-4">
+                    <img
+                      src={getImageUrl(fb.product.prod_Img)} 
+                      alt={fb.product.prod_Name}
+                      className="rounded-circle feedback-img"
+                      onError={(e) => (e.target.src = 'https://via.placeholder.com/100')}
+                    />
+                  </div>
+                  <div className="flex-grow-1">
+                    <Card.Title className="text-primary">
+                      {fb.product.prod_Name}{' '}
+                      <Badge bg="secondary" className="ms-2">{fb.product.category}</Badge>
+                    </Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      <span className="fw-semibold">Customer:</span> {fb.customer.name} |{' '}
+                      <span className="fw-semibold">Rating:</span> {renderStars(fb.rating)}
+                    </Card.Subtitle>
+                    <Card.Text className="text-dark mt-2">"{fb.description}"</Card.Text>
+                    <Card.Text className="text-muted small">
+                      <span className="fw-semibold">Farmer:</span> {fb.product.farmerDTO.name} ({fb.product.farmerDTO.farmLocation}) |{' '}
+                      <span className="text-success">{fb.product.farmerDTO.farmType}</span>
+                    </Card.Text>
+                    <Card.Text className="text-muted small">
+                      <span className="fw-semibold">Price:</span> ₹{fb.product.prod_Price} |{' '}
+                      <span className="fw-semibold">Stock:</span> {fb.product.prod_Stock}
+                    </Card.Text>
+                  </div>
                 </Card.Body>
               </Card>
             ))
           ) : (
-            <Alert variant="info">No feedback available.</Alert>
+            <Alert variant="info" className="text-center rounded-pill">
+              No feedback available yet. Be the first to share!
+            </Alert>
           )}
         </Col>
       </Row>
