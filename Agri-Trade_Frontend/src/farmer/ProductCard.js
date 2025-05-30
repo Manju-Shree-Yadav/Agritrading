@@ -102,6 +102,8 @@ export default function ProductCard({ product }) {
     return text.length > length ? text.substring(0, length) + '...' : text;
   };
 
+  const productName = product && product.prod_Name ? product.prod_Name[0].toUpperCase() : '';
+
   return (
     <Card
       sx={{
@@ -120,7 +122,7 @@ export default function ProductCard({ product }) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500], width: 40, height: 40, fontSize: '1rem' }} aria-label="product">
-            {product.prod_Name[0].toUpperCase()}
+            {productName}
           </Avatar>
         }
        
@@ -130,14 +132,17 @@ export default function ProductCard({ product }) {
         subheaderTypographyProps={{ variant: 'body2', color: 'text.secondary' }}
       />
       <CardMedia
-        component="img"
-        height="200"
-        image={getImageUrl(product.prod_Img)}
-        alt={product.prod_Name}
-        sx={{
-          objectFit: 'cover',
-        }}
-      />
+  component="img"
+  image={getImageUrl(product.prod_Img)}
+  alt={product.prod_Name}
+  sx={{
+    width: "100%",        // Ensures it adapts to the card width
+    height: 300,          // Fixed height for consistency
+    objectFit: "cover",   // Crops excess parts to maintain aspect ratio
+    borderRadius: "8px",  // Optional: Adds rounded corners for aesthetics
+  }}
+/>
+
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {truncateText(product.prod_Description, 100)}

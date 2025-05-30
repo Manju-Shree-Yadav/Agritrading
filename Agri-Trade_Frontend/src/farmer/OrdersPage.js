@@ -40,28 +40,48 @@ const Orders = ({ orders }) => {
                     }
                 }, [navigate]);
 
-    const handleMarkAsCompleteButton = async(orderId) =>{
-      try {
-        
-        const response = await fetch(`http://localhost:5456/orders/status?orderId=${orderId}`, {
-            method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+    const handleMarkAsCompleteButton = async (orderId) => {
+        try {
+            const response = await fetch(`http://localhost:5456/orders/status?orderId=${orderId}`, {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
     
-        const responseData = await response.json();
+            const responseData = await response.json();
     
-        if (!response.ok) {
-            throw new Error(responseData.message || 'Failed to edit product');
+            if (!response.ok) {
+                throw new Error(responseData.message || 'Failed to edit product');
+            }
+    
+            // Add delivery details
+            const deliveryResponse = await fetch('http://localhost:5456/delivery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    trackingNumber: 1234,
+                    estimatedArrivalTime: '2024-12-03',
+                    deliveryAddress: 'Bangalore',
+                }),
+            });
+    
+            const deliveryData = await deliveryResponse.json();
+    
+            if (!deliveryResponse.ok) {
+                throw new Error(deliveryData.message || 'Failed to add delivery details');
+            }
+    
+            window.location.reload();
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to complete order and push delivery. Please try again.');
         }
-    
-        window.location.reload();
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Failed to edit Product. Please try again.');
-    }
-    }
+    };
 
     const handleDeleteIconClick = (orderId) =>{
       setOpenDialog(true);
@@ -175,12 +195,11 @@ const Orders = ({ orders }) => {
             <strong>Status:</strong> {order.orderStatus}
           </Typography>
           <Stack alignContent={'end'}>
-          {order.orderStatus=== 'COMPLETED' ? (<></>):( <Button variant='outlined' sx={{
-            maxHeight:'30px'
-          }}
-          onClick={()=> handleMarkAsCompleteButton(order.orderId)}>
-            MARK AS COMPLETED
-          </Button>)}
+          {order.orderStatus === 'COMPLETED' ? (<></>) : (
+            <Button variant='outlined' sx={{ maxHeight: '30px' }} onClick={() => handleMarkAsCompleteButton(order.orderId)}>
+                Complete and Push Delivery
+            </Button>
+          )}
 
           <Dialog
         open={openDialog}

@@ -34,4 +34,7 @@ public class Response {
 
     private DeliveryDTO delivery;
     private List<DeliveryDTO> deliveryList;
+
+    private FeedbackDTO feedback;
+    private List<FeedbackDTO> feedbackList;
 }

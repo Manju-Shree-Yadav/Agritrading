@@ -23,36 +23,66 @@ const Payment = () => {
         }
     }, [navigate]);
 
+
+
     const handlePayment = async () => {
-        try {
-            const response = await fetch('http://localhost:5456/customers/payments', {
+    try {
+        const response = await fetch('http://localhost:5456/customers/payments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                amount: order.totalPrice,
+                paymentType,
+                paymentStatus,
+                orderId: order.orderId
+            }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            await updateOrderStatus(order.orderId);
+            await addDeliveryDetails(order.orderId);
+            alert('Payment successful!');
+
+            // Fetch the receipt from the server
+            const receiptResponse = await fetch('http://127.0.0.1:5000/generate-receipt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    amount: order.totalPrice,
-                    paymentType,
-                    paymentStatus,
-                    orderId: order.orderId
-                }),
+                body: JSON.stringify({ payment: data }),
             });
-            const data = await response.json();
-            if (response.ok) {
-                await updateOrderStatus(order.orderId);
-                await addDeliveryDetails(order.orderId);
-                alert('Payment successful!');
-                navigate('/consumer/order');
-            } else {
-                throw new Error(data.message || 'Payment failed');
-            }
-        } catch (error) {
-            console.error('Error processing payment:', error);
-            alert('Payment failed. Please try again.');
-        }
-    };
+            
 
+            if (receiptResponse.ok) {
+                const blob = await receiptResponse.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'payment_receipt.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                const error = await receiptResponse.json();
+                console.error('Error generating receipt:', error);
+                alert('Failed to generate receipt. Please try again.');
+            }
+
+            navigate('/consumer/order');
+        } else {
+            throw new Error(data.message || 'Payment failed');
+        }
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        alert('Payment failed. Please try again.');
+    }
+};
     const updateOrderStatus = async (orderId) => {
         try {
             const response = await fetch(`http://localhost:5456/orders/status?orderId=${orderId}`, {
@@ -62,7 +92,7 @@ const Payment = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    orderStatus: 'Completed'
+                    orderStatus: 'Payment Completed'
                 }),
             });
             if (!response.ok) {
